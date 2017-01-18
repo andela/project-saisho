@@ -2,7 +2,7 @@ import url from "url";
 import { merge, uniqWith } from "lodash";
 import { Meteor } from "meteor/meteor";
 import { EJSON } from "meteor/ejson";
-import { Jobs, Packages, Shops } from "/lib/collections";
+import { Jobs, Packages, Shops, Accounts } from "/lib/collections";
 import { Hooks, Logger } from "/server/api";
 import ProcessJobs from "/server/jobs";
 import { getRegistryDomain } from "./setDomain";
@@ -117,6 +117,43 @@ export default {
 
   hasDashboardAccess() {
     return this.hasPermission(["owner", "admin", "dashboard"]);
+  },
+  setHasTakenTour() {
+    let userId = Meteor.userId();
+    Accounts.update({_id: userId}, {$set: {hasTakenTour: true}}, function (err, account) {
+      console.log('done', err, account);
+    });
+  },
+
+  hasTakenTour() {
+    let userId = Meteor.userId();
+    let account = Accounts.findOne({
+      userId: userId
+    });
+    if (account && account.hasTakenTour) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+
+  setHasTakenAdminTour() {
+    let userId = Meteor.userId();
+    Accounts.update({_id: userId}, {$set: {hasTakenAdminTour: true}}, function (err, account) {
+      console.log('done', err, account);
+    });
+  },
+
+  hasTakenAdminTour() {
+    let userId = Meteor.userId();
+    let account = Accounts.findOne({
+      userId: userId
+    });
+    if (account && account.hasTakenAdminTour) {
+      return true;
+    } else {
+      return false;
+    }
   },
 
   getSellerShopId() {
@@ -276,7 +313,7 @@ export default {
     if (Meteor.users.find({
       "emails.address": options.email
     }).count() === 0) {
-      accountId = Accounts.createUser(options);
+      accountId = Meteor.call('createAUser', options);
     } else {
       // this should only occur when existing admin creates a new shop
       accountId = Meteor.users.findOne({

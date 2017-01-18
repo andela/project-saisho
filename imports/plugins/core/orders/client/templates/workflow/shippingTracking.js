@@ -4,6 +4,8 @@ import { Tracker } from "meteor/tracker";
 import { Template } from "meteor/templating";
 import { Orders } from "/lib/collections";
 
+import FlatButton from "/imports/plugins/core/ui/client/components/button/flatButton"; // Import flatbutton react component
+
 Template.coreOrderShippingTracking.onCreated(() => {
   const template = Template.instance();
   const currentData = Template.currentData();
@@ -46,7 +48,7 @@ Template.coreOrderShippingTracking.events({
     });
   },
 
-  "click [data-event-action=shipmentPacked]": () => {
+  "click [data-event-action=shipmentPacked]": () => { // TODO: look into this
     const template = Template.instance();
 
     Meteor.call("orders/shipmentPacked", template.order, template.order.shipping[0], true);
@@ -85,13 +87,10 @@ Template.coreOrderShippingTracking.helpers({
           return true;
         }
       });
-
-      return _.includes(fullItem.workflow.workflow, "coreOrderItemWorkflow/shipped");
+      return fullItem.workflow.status === "coreOrderItemWorkflow/shipped";
     });
-
     return shippedItems;
   },
-
   isCompleted() {
     const currentData = Template.currentData();
     const order = Template.instance().order;
@@ -103,12 +102,11 @@ Template.coreOrderShippingTracking.helpers({
         }
       });
 
-      return _.includes(fullItem.workflow.workflow, "coreOrderItemWorkflow/completed");
+      return fullItem.workflow.status === "coreOrderItemWorkflow/completed";
     });
 
     return completedItems;
   },
-
   editTracking() {
     const template = Template.instance();
     if (!template.order.shipping[0].tracking || template.showTrackingEditForm.get()) {
@@ -127,5 +125,55 @@ Template.coreOrderShippingTracking.helpers({
     const shipment = order.shipping[0];
 
     return shipment.packed && shipment.tracking;
+  },
+
+  // check of the order has been cancelled
+  orderCanceled() {
+    const order = Template.instance().order;
+
+    return (order.workflow.status === "coreOrderWorkflow/canceled");
+  },
+
+  // Create a helper to import in the FlatButton react component for
+  // cancelOrder button
+  CancelOrderButton() {
+    const order = Template.instance().order;
+    return  {
+      component: FlatButton,
+      kind: "flat",
+      className: "btn-danger btn-block",
+      label: "Cancel order",
+      onClick() {
+        let reason = document.querySelector("#cancelation-reason").value;
+
+        if (reason === "others") {
+          reason = document.querySelector(".other-reasons").value;
+        }
+        Meteor.call("orders/cancelOrder", order._id, reason, function (error) {
+          if (error) {
+            console.log("error", error);
+          }
+        });
+      }
+    };
+  },
+
+  // Create a helper to import in the FlatButton react component for
+  // complete order button
+  CompleteOrderButton() {
+    const order = Template.instance().order;
+    return  {
+      component: FlatButton,
+      kind: "flat",
+      className: "btn-success btn-block",
+      label: "Complete order",
+      onClick() {
+        Meteor.call("orders/orderCompleted", order, function (error) {
+          if (error) {
+            console.log("error", error);
+          }
+        });
+      }
+    };
   }
 });

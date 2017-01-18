@@ -29,8 +29,14 @@ Template.cartCompleted.helpers({
   orderStatus: function () {
     if (this.workflow.status === "new") {
       return i18next.t("cartCompleted.submitted");
+    } else if (this.workflow.status === "coreOrderWorkflow/cancel-request") {
+      return "being processed for cancelation";
+    } else if (this.workflow.status === "coreOrderWorkflow/processing") {
+      return "processing";
+    } else if (this.workflow.status === "coreOrderWorkflow/shipped") {
+      return "shipped";
     }
-    return this.workflow.status;
+    return "delivered";
   },
   userOrders: function () {
     if (Meteor.user()) {

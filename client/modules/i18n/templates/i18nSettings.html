@@ -1,27 +1,38 @@
 <template name="i18nSettings">
-  <div class="panel panel-default">
-    <div class="panel-body">
-      {{#autoForm collection=Collections.Shops doc=shop id="shopEditLocalizationSettingsForm" type="update" autosave=true}}
-        {{> afQuickField name='timezone' options=timezoneOptions}}
-        {{> afQuickField name='currency' options=currencyOptions}}
-        {{> afQuickField name='baseUOM' options=uomOptions}}
-        {{> afQuickField name='language' options=enabledLanguages}}
-      {{/autoForm}}
-    </div>
-    <div class="panel-body">
-      <label class="control-label" data-i18n="i18nSettings.enabledLanguages">Languages</label>
-      {{#each language in languages}}
-        <div class="panel-heading panel-heading-flex">
-          <div class="panel-title">
-            <i class="fa icon-{{language.label}}"></i>
-            <span data-i18n="{{language.i18nKey}}">{{language.label}}</span>
+  <div id="internalization-settings">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <button type="button" class="btn btn-success" onclick="runInternationalizationTour()">Take Tour</button>
+      </div>
+      <script>
+        function runInternationalizationTour() {
+          introJs("#internalization-settings").start();
+        }
+      </script>
+      <div class="panel-body">
+        {{#autoForm collection=Collections.Shops doc=shop id="shopEditLocalizationSettingsForm" type="update"
+                    autosave=true}}
+          {{> afQuickField name='timezone' options=timezoneOptions data-intro="Set your time zone" data-position="auto"}}
+          {{> afQuickField name='currency' options=currencyOptions data-intro="Set your default currency" data-position="auto"}}
+          {{> afQuickField name='baseUOM' options=uomOptions data-intro="Set your default unit of measure" data-position="auto"}}
+          {{> afQuickField name='language' options=enabledLanguages data-intro="Set your default language. Users can change this for their use" data-position="auto"}}
+        {{/autoForm}}
+      </div>
+      <div class="panel-body" data-intro="Configure the supported languages for your site" data-position="auto">
+        <label class="control-label" data-i18n="i18nSettings.enabledLanguages">Languages</label>
+        {{#each language in languages}}
+          <div class="panel-heading panel-heading-flex">
+            <div class="panel-title">
+              <i class="fa icon-{{language.label}}"></i>
+              <span data-i18n="{{language.i18nKey}}">{{language.label}}</span>
+            </div>
+            <div class="panel-controls">
+              <input class="checkbox-switch" id="input-{{language.value}}" type="checkbox" name="enabled"
+                     data-language="{{language}}" value="{{language.value}}" {{checked language.enabled}}>
+            </div>
           </div>
-          <div class="panel-controls">
-            <input class="checkbox-switch" id="input-{{language.value}}" type="checkbox" name="enabled" data-language="{{language}}" value="{{language.value}}" {{checked language.enabled}}>
-          </div>
-        </div>
-      {{/each}}
+        {{/each}}
+      </div>
     </div>
   </div>
-
 </template>

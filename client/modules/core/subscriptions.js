@@ -36,6 +36,8 @@ Subscriptions.Tags = Subscriptions.Manager.subscribe("Tags");
 
 Subscriptions.Media = Subscriptions.Manager.subscribe("Media");
 
+Subscriptions.Audio = Subscriptions.Manager.subscribe("Audio");
+
 // admin only
 // todo should we put this inside autorun and detect user changes
 Subscriptions.Inventory = Subscriptions.Manager.subscribe("Inventory");

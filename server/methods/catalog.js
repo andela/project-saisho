@@ -3,7 +3,7 @@ import { EJSON } from "meteor/ejson";
 import { check } from "meteor/check";
 import { Meteor } from "meteor/meteor";
 import { Catalog } from "/lib/api";
-import { Media, Products, Revisions, Tags } from "/lib/collections";
+import { Media, Audio, Products, Revisions, Tags } from "/lib/collections";
 import { Logger, Reaction } from "/server/api";
 
 /**
@@ -1269,5 +1269,26 @@ Meteor.methods({
 
     Logger.debug("invalid product visibility ", productId);
     throw new Meteor.Error(400, "Bad Request");
+  },
+  "digital/products/getFile": function (id) {
+    check(id, String);
+
+    return Audio.findOne({_id: id});
+  },
+  "digital/products/getDigitalProduct": function (id) {
+    check(id, String);
+
+    return Audio.findOne({"metaData.productId": id});
+  },
+  "digital/products/deleteFile": function (id) {
+    check(id, String);
+
+    Audio.remove({_id: id}, function (err, res) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log(res, "result");
+      }
+    });
   }
 });

@@ -1,33 +1,66 @@
  <template name="coreOrderShippingTracking">
+  {{#unless orderCanceled}}
+     {{#if editTracking}}
+     <form class="form-inline" name="addTrackingForm">
+       <div class="form-group">
+         {{i18n "orderShipping.tracking" "Tracking"}}: <label>{{tracking}}</label>
+         <input class="form-control" type="text" name="trackingNumber" value="{{shipment.tracking}}">
+         <button class="btn btn-default" type="submit" data-i18n="app.save">Save</button>
+       </div>
+     </form>
+     {{else}}
+      <strong data-i18n="orderShipping.tracking">Tracking</strong>:
+      <button class="btn btn-link" data-event-action="editTracking">{{shipment.tracking}}</button>
+     {{/if}}
 
-   {{#if editTracking}}
-   <form class="form-inline" name="addTrackingForm">
-     <div class="form-group">
-       {{i18n "orderShipping.tracking" "Tracking"}}: <label>{{tracking}}</label>
-       <input class="form-control" type="text" name="trackingNumber" value="{{shipment.tracking}}">
-       <button class="btn btn-default" type="submit" data-i18n="app.save">Save</button>
-     </div>
-   </form>
-   {{else}}
-    <strong data-i18n="orderShipping.tracking">Tracking</strong>:
-    <button class="btn btn-link" data-event-action="editTracking">{{shipment.tracking}}</button>
-   {{/if}}
+    {{#unless isCompleted}}
+      {{#if isShipped}}
+        {{i18n "orderShipping.itemsHaveBeenShipped" "Items have been shipped"}}
+        <button class="btn btn-default" data-event-action="resendNotification" data-i18n="orderShipping.resendNotification">Resend Shipment Notification</button>
+      {{else}}
 
-  {{#if isCompleted}}
-    {{i18n "orderShipping.itemsHaveBeenShipped" "Items have been shipped"}}
-    <button class="btn btn-default" data-event-action="resendNotification" data-i18n="orderShipping.resendNotification">Resend Shipment Notification</button>
-  {{else}}
-
-  <hr>
-    {{#if shipmentReady}}
-      <p data-i18n="orderShipping.shippingNotifyCustomer">Notify the customer that their items will be shipping soon.</p>
-      <button class="btn btn-success btn-block" data-event-action="shipmentShipped" data-i18n="orderShipping.shipped">Shipped</button>
-    {{else}}
-      <button
-        class="btn btn-default btn-block"
-        type="button"
-        data-i18n="orderShipping.shipmentPacked"
-        data-event-action="shipmentPacked">All Items Packed, Ready to Ship</button>
-    {{/if}}
-  {{/if}}
+      <hr>
+        {{#if shipmentReady}}
+          <p data-i18n="orderShipping.shippingNotifyCustomer">Notify the customer that their items will be shipping soon.</p>
+          <button class="btn btn-success btn-block" data-event-action="shipmentShipped" data-i18n="orderShipping.shipped">Shipped</button>
+        {{else}}
+          <button
+            class="btn btn-default btn-block"
+            type="button"
+            data-i18n="orderShipping.shipmentPacked"
+            data-event-action="shipmentPacked">All Items Packed, Ready to Ship</button>
+        {{/if}}
+      {{/if}}
+    {{/unless}}
+    <br/>
+    {{#unless isCompleted}}
+      {{#if isShipped}}
+        <div class="complete-panel">
+          <div style="padding: 10px 0">
+            {{> React CompleteOrderButton}}
+          </div>
+        </div>
+      {{/if}}
+      <div class="row cancel-panel">
+        <div class="col-xs-12 col-sm-6">
+          <select id="cancelation-reason" name="cancelation-reason" class="form-control">
+            <option value="failed-delivery" selected>Failed delivery</option>
+            <option value="wrong-item">Wrong Item</option>
+            <option value="damaged">Damaged in transit</option>
+            <option value="out-of-stock">Item out of stock</option>
+            <option value="out-of-stock">Customer changed mind</option>
+            <option value="others">Other reasons</option>
+          </select>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <input type="text" name="other-reasons" class="form-control other-reasons" placeholder="Other Reasons" />
+        </div>
+      </div>
+      <div class="row" style="padding:5px 0;">
+        <div class="col-xs-12 col-sm-6">
+          {{> React CancelOrderButton}}
+        </div>
+      </div>
+    {{/unless}}
+{{/unless}}
 </template>

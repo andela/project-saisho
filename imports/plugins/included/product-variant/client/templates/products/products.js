@@ -1,7 +1,7 @@
 import { Reaction } from "/client/api";
 import { ReactionProduct } from "/lib/api";
 import { applyProductRevision } from "/lib/api/products";
-import { Products, Tags } from "/lib/collections";
+import { Products, Tags, Packages} from "/lib/collections";
 import { Session } from "meteor/session";
 import { Template } from "meteor/templating";
 import { ITEMS_INCREMENT } from "/client/config/defaults";
@@ -105,6 +105,7 @@ Template.products.onCreated(function () {
 });
 
 Template.products.onRendered(() => {
+  $.getScript("//platform.twitter.com/widgets.js");
   // run the above func every time the user scrolls
   $("#reactionAppContainer").on("scroll", loadMoreProducts);
   $(window).on("scroll", loadMoreProducts);
@@ -170,5 +171,46 @@ Template.products.events({
   "click [data-event-action=loadMoreProducts]": (event) => {
     event.preventDefault();
     loadMoreProducts();
+  }
+});
+
+/*
+* Creating social feeds
+*/
+Template.socialFeeds.onCreated(function () {
+  this.state = new ReactiveDict();
+  this.state.setDefault({
+    feeds: {}
+  });
+
+  this.autorun(() => {
+    this.subscribe("Packages");
+    const feedsConfig = Packages.findOne({
+      name: "reaction-social"
+    });
+    this.state.set("feeds", feedsConfig.settings.public.apps);
+  });
+});
+
+/*
+* socialFeeds helpers
+*/
+Template.socialFeeds.helpers({
+  facebookUrl() {
+    const facebookConfig = Template.instance().state.get("feeds").facebook;
+    if (facebookConfig.enabled && facebookConfig.appId !== "" && facebookConfig.profilePage !== "") {
+      const index = facebookConfig.profilePage.lastIndexOf("/") + 1;
+      return `https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2F${
+        facebookConfig.profilePage.substr(index)}&tabs=timeline&width=300&height=500&
+        small_header=true&adapt_container_width=true&hide_cover=true&show_facepile=true&appId=${facebookConfig.appId}`;
+    }
+    return false;
+  },
+  twitterUrl() {
+    const twitterConfig = Template.instance().state.get("feeds").twitter;
+    if (twitterConfig.enabled && twitterConfig.profilePage !== "") {
+      return twitterConfig.profilePage;
+    }
+    return false;
   }
 });

@@ -12,6 +12,7 @@ import { i18next } from "/client/api";
  */
 class PublishContainer extends Component {
   handlePublishClick = (revisions) => {
+    console.log(revisions);
     if (Array.isArray(revisions)) {
       const documentIds = revisions.map((revision) => {
         return revision.documentId;

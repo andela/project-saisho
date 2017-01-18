@@ -5,7 +5,6 @@ import { Template } from "meteor/templating";
 import { Reaction, i18next } from "/client/api";
 import { Packages } from "/lib/collections";
 
-
 Template.coreAdminLayout.onRendered(function () {
   $("body").addClass("admin");
 });
@@ -25,8 +24,15 @@ Template.coreAdminLayout.helpers({
 
     const items = [];
 
+    const introInfo = [
+      "Access your dashboard",
+      "Manage orders",
+      "Manage registered users"
+    ]
+
     if (_.isArray(shortcuts)) {
-      for (const shortcut of shortcuts) {
+      for (let i = 0; i < shortcuts.length; i++) {
+        const shortcut = shortcuts[i];
         items.push({
           type: "link",
           href: Reaction.Router.pathFor(shortcut.name),
@@ -34,7 +40,9 @@ Template.coreAdminLayout.helpers({
           icon: shortcut.icon,
           tooltip: shortcut.label || "",
           i18nKeyTooltip: shortcut.i18nKeyLabel,
-          tooltipPosition: "left middle"
+          tooltipPosition: "left middle",
+          "data-intro": introInfo[i],
+          "data-position" : "auto"
         });
       }
     }
@@ -48,6 +56,8 @@ Template.coreAdminLayout.helpers({
       tooltip: "Create Content",
       i18nKeyTooltip: "app.createContent",
       tooltipPosition: "left middle",
+      "data-intro": "Add a new product.",
+      "data-position" : "auto",
       onClick(event) {
         if (!instance.dropInstance) {
           instance.dropInstance = new Drop({

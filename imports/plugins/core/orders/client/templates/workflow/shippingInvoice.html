@@ -94,24 +94,23 @@
     <hr>
 
     <div class="flex">
+      {{#unless orderCanceled}}
+        {{#if paymentPendingApproval}}
+          <button class="btn btn-info btn-block" type="submit" data-event-action="approveInvoice" data-i18n="order.approveInvoice">Approve</button>
+        {{/if}}
 
-      {{#if paymentPendingApproval}}
-        <button class="btn btn-info btn-block" type="submit" data-event-action="approveInvoice" data-i18n="order.approveInvoice">Approve</button>
-      {{/if}}
-
-      {{#if paymentApproved}}
-          <a
-            class="btn btn-link"
-            href="{{pathFor "dashboard/pdf/orders" id=orderId }}?shipment={{fulfillment._id}}"
-            target="_blank"
-            data-i18n="app.print">
-            Print
-          </a>
-          <button class="btn btn-link flex-item-fill" type="button" data-event-action="makeAdjustments" data-i18n="order.makeAdjustments">Make Adjustments</button>
-          <button class="btn btn-success flex-item-fill" type="button" data-event-action="capturePayment" data-i18n="order.capturePayment">Capture Payment</button>
-      {{/if}}
-
-
+        {{#if paymentApproved}}
+            <a
+              class="btn btn-link"
+              href="{{pathFor "dashboard/pdf/orders" id=orderId }}?shipment={{fulfillment._id}}"
+              target="_blank"
+              data-i18n="app.print">
+              Print
+            </a>
+            <button class="btn btn-link flex-item-fill" type="button" data-event-action="makeAdjustments" data-i18n="order.makeAdjustments">Make Adjustments</button>
+            <button class="btn btn-success flex-item-fill" type="button" data-event-action="capturePayment" data-i18n="order.capturePayment">Capture Payment</button>
+        {{/if}}
+      {{/unless}}
     </div>
 
   </form>

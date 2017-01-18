@@ -48,6 +48,18 @@ Template.productGrid.onRendered(function () {
       }
     });
   }
+
+  const setHasTakenTour = function () {
+    Reaction.setHasTakenTour();
+  };
+
+  if (!Reaction.hasTakenTour()) {
+    const introJS = introJs();
+    introJS.start();
+    introJS.onexit(setHasTakenTour);
+    introJS.oncomplete(setHasTakenTour);
+  }
+
 });
 
 Template.productGrid.events({

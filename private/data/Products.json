@@ -31,7 +31,8 @@
   "updatedAt": {
     "$date": "2014-06-01T12:17:13.949-0700"
   },
-  "vendor": "Example Manufacturer"
+  "vendor": "Example Manufacturer",
+  "isDigital": false
 }, {
   "_id": "6qiqPwBkeJdtdQc4G",
   "ancestors": [
@@ -56,7 +57,8 @@
   }],
   "shopId": "J8Bhq3uTtdgwZx3rz",
   "taxable": true,
-  "type": "variant"
+  "type": "variant",
+  "isDigital": false
 }, {
   "_id": "SMr4rhDFnYvFMtDTX",
   "ancestors": [
@@ -83,7 +85,8 @@
   }],
   "shopId": "J8Bhq3uTtdgwZx3rz",
   "taxable": true,
-  "type": "variant"
+  "type": "variant",
+  "isDigital": false
 }, {
   "_id": "CJoRBm9vRrorc9mxZ",
   "ancestors": [
@@ -110,5 +113,6 @@
   }],
   "shopId": "J8Bhq3uTtdgwZx3rz",
   "taxable": true,
-  "type": "variant"
+  "type": "variant",
+  "isDigital": false
 }]

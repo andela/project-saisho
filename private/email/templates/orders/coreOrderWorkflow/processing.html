@@ -1,0 +1,17 @@
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width" />
+</head>
+<body>
+  <div>
+    <div><img src="{{emailLogo}}" /> {{ shopContact.fullName }} </div>
+    <h3>Hi, {{shipping.address.fullName}}</h3><div>Order status: {{shipping.address.workflow.status}}</div>
+    <div>
+      <p>Your order from {{shopContact.fullName}} is being processed.</p>
+      <p>When your order ships, We will send you an email with the tracking informations.</p>
+      <p>Thank you for choosing <strong>{{shopContact.fullName}}</strong>.</p>
+      <em>Regards.</em><br />
+      <em>{{shopContact.fullName}}</em>
+    </div>
+  </div>
+</body>

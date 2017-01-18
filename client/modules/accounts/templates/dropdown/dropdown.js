@@ -65,6 +65,10 @@ Template.loginDropdown.events({
       event.preventDefault();
       const route = this.name || this.route;
       Reaction.Router.go(route);
+    } else {
+      event.preventDefault();
+      Reaction.Router.go("/");
+      introJs().start();
     }
     template.$(".dropdown-toggle").dropdown("toggle");
   }

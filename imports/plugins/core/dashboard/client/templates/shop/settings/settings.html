@@ -25,11 +25,17 @@
             data-i18n="shopSettings.general">General</a>
         </div>
       </div>
+      <script>
+        function runCoreSettingsTour() {
+          introJs("#shopSettingsAccordian").start();
+        }
+      </script>
       <div id="general" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="General">
         <div class="panel-body">
+          <button type="button" class="btn btn-success" onclick="runCoreSettingsTour()">Take Tour</button>
           {{#autoForm collection=Collections.Packages schema=Schemas.CorePackageConfig
           doc=packageData id="shopEditOptionsForm" type="update" autosave=true}}
-            {{> afFieldInput name='settings.public.allowGuestCheckout'}}
+            {{> afFieldInput name='settings.public.allowGuestCheckout' data-intro="Allow or stop guests from checking out" data-position="auto"}}
           {{/autoForm}}
         </div>
         <div class="panel-body">
@@ -38,10 +44,10 @@
         </div>
         <div class="panel-body">
           {{#autoForm collection=Collections.Shops doc=shop id="shopEditForm" type="update"}}
-            {{> afQuickField name='name' placeholder="Shop Name"}}
-            {{> afQuickField name='emails.0.address' label="Email" placeholder="Primary Contact Email"}}
-            {{> afQuickField name='description' placeholder="Description"}}
-            {{> afQuickField name='keywords' placeholder="Keywords"}}
+            {{> afQuickField name='name' placeholder="Shop Name" data-intro="Customize your store name" data-position="auto"}}
+            {{> afQuickField name='emails.0.address' label="Email" placeholder="Primary Contact Email" data-intro="Set the primary contact email address" data-position="auto"}}
+            {{> afQuickField name='description' placeholder="Description" data-intro="Add a description to your store" data-position="auto"}}
+            {{> afQuickField name='keywords' placeholder="Keywords" data-intro="Keywords make your store more visible. Add some" data-position="auto"}}
             {{> shopSettingsSubmitButton}}
           {{/autoForm}}
         </div>
@@ -49,7 +55,7 @@
     </div>
 
     <div class="panel panel-default">
-      <div class="panel-heading">
+      <div class="panel-heading" data-intro="Customise your store address settings here" data-position="auto">
         <div class="panel-title">
           <a
             href="#address"
@@ -83,7 +89,7 @@
     </div>
 
     <div class="panel panel-default">
-      <div class="panel-heading">
+      <div class="panel-heading" data-intro="Set the default payment method you want available" data-position="auto">
         <div class="panel-title">
           <a
             href="#payment-methods"
@@ -105,7 +111,7 @@
     </div>
 
     <div class="panel panel-default">
-      <div class="panel-heading">
+      <div class="panel-heading" data-intro="Set the API keys for all core API's here" data-position="auto">
         <div class="panel-title">
           <a
             href="#options"
@@ -131,7 +137,7 @@
     </div>
 
     <div class="panel panel-default">
-      <div class="panel-heading">
+      <div class="panel-heading" data-intro="Import files here" data-position="auto">
         <div class="panel-title">
           <a
             href="#import"

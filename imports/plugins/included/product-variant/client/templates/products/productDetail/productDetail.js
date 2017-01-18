@@ -233,6 +233,15 @@ Template.productDetail.helpers({
 });
 
 /**
+* productDetail hepers
+*/
+Template.productDetail.helpers({
+  SocialFeed() {
+    return SocialFeed;
+  }
+});
+
+/**
  * productDetail events
  */
 

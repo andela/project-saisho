@@ -6,6 +6,83 @@ import { i18next } from "/client/api";
 import { ProductSearch, Tags, OrderSearch, AccountSearch } from "/lib/collections";
 import { IconButton, SortableTable } from "/imports/plugins/core/ui/client/components";
 
+function filterResult(sortKey, sortStyle) {
+  const result = [];
+  if (JSON.stringify(filterItems) === "[{\"vendor\":[]},{},{},{}]") {
+    return getProducts(sortKey, sortStyle);
+  }
+  const tempFilter = [];
+  filterItems.filter((item) => {
+    if (item[Object.keys(item)] !== undefined && (item[Object.keys(item)]).length > 0) {
+      tempFilter.push(Object.keys(item)[0]);
+    }
+  });
+  getProducts(sortKey, sortStyle).filter((product) => {
+    let match = false;
+    let count = 0;
+    filterItems.forEach(item => {
+      match = false;
+      const key = Object.keys(item).toString();
+      switch (key) {
+        case "vendor":
+          match = vendorMatch(item[key], product[key]);
+          break;
+        case "min":
+          match = priceMatch("min", product.price, item[key]);
+          break;
+        case "max":
+          match = priceMatch("max", product.price, item[key]);
+          break;
+        default:
+          match = false;
+      }
+      if (match) {
+        count++;
+        if (count === tempFilter.length) {
+          result.push(product);
+        }
+      }
+    });
+  });
+  return result;
+}
+
+function setSearchResults(result) {
+  const instance = Template.instance();
+  if (result !== undefined) {
+    instance.state.set("productSearchResults", result);
+  }
+}
+
+// Match for price
+function priceMatch(type, value, condition) {
+  if (!value) {
+    return false;
+  }
+
+  if (type === "min" && (value.min >= condition || value.max >= condition)) {
+    return true;
+  }
+  if (type === "max" && (value.min <= condition || value.max <= condition)) {
+    return true;
+  }
+  return false;
+}
+
+// Match for vendors
+function vendorMatch(itemKey, productKey) {
+  return (itemKey.includes(productKey.toString())) ?
+    true : false;
+}
+
+// format of items {location: item} e.g {vendor: china}
+function getProducts(sortKey, sortStyle) {
+  const keyObj = {};
+  keyObj[sortKey] = sortStyle;
+  return ProductSearch.find({}, { sort: keyObj }).fetch();
+}
+
+
 /*
  * searchModal extra functions
  */
@@ -21,6 +98,10 @@ function tagToggle(arr, val) {
  */
 Template.searchModal.onCreated(function () {
   this.state = new ReactiveDict();
+  filterItems = [{ vendor: [] }, { min: undefined }, { max: undefined }, { score: undefined }];
+  emptyFilter = [{ vendor: [] }, { min: undefined }, { max: undefined }, { score: undefined }];
+  sortType = "title";
+  sortAZ = 1;
   this.state.setDefault({
     initialLoad: true,
     slug: "",
@@ -164,6 +245,34 @@ Template.searchModal.events({
     if (!$(".search-modal-header").hasClass("active-search")) {
       $(".search-modal-header").addClass("active-search");
     }
+  },
+  "change [data-event-action=filterSearch]": (event) => {
+    const key = event.target.parentNode.id;
+    const value = event.target.value;
+    let result;
+    if (key === "sort") {
+      if (!parseInt(value, 10)) {
+        sortType = value;
+      } else {
+        sortAZ = value;
+      }
+      result = filterResult(sortType, sortAZ);
+    } else {
+      this.filterItems.forEach((item) => {
+        const itemKey = Object.keys(item).toString();
+        if (itemKey === key) {
+          if (key === "vendor" && !item[itemKey].includes(value)) {
+            item[itemKey].push(value);
+          } else if (key === "vendor") {
+            item[itemKey].splice(item[itemKey].indexOf(value), 1);
+          } else {
+            item[itemKey] = value;
+          }
+        }
+      });
+      result = filterResult(sortType, sortAZ);
+    }
+    setSearchResults(result);
   },
   "click [data-event-action=filter]": function (event, templateInstance) {
     event.preventDefault();

@@ -105,7 +105,7 @@ export default function () {
         variants: selectedOption2
       }];
     },
-    requiresShipping: true,
+    requiresShipping: product.requiresShipping,
     shipping: [], // Shipping Schema
     billing: [], // Payment Schema
     state: "new",

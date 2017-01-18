@@ -3,6 +3,7 @@ import { Reaction } from "/server/api";
 
 const {
   Accounts,
+  Audio,
   Cart,
   Packages,
   Discounts,
@@ -169,7 +170,7 @@ export default function () {
   /*
    * apply download permissions to file collections
    */
-  _.each([Media], function (fsCollection) {
+  _.each([Audio, Media], function (fsCollection) {
     return fsCollection.allow({
       download: function () {
         return true;

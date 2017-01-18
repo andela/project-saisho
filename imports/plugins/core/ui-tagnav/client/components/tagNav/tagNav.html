@@ -9,7 +9,7 @@
         onClick=handleMenuClose
       }}
     </div>
-    <div class="navbar-items">
+    <div class="navbar-items"  data-intro="These are your stores's associated tags." data-position="auto">
       {{#each tag in tags}}
         <div class="navbar-item {{navbarSelectedClassName tag}} {{hasDropdownClassName tag}}" data-id={{tag._id}}>
           {{> tagItem (tagProps tag)}}

@@ -1,5 +1,5 @@
 <template name="productGrid">
-  <div class="container-main">
+  <div class="container-main" style="display:-webkit-inline-box !important; width: 94%;">
     <div class="product-grid">
       <ul class="product-grid-list list-unstyled" id="product-grid-list">
         {{#each products}}
@@ -15,5 +15,22 @@
         {{/each}}
       </ul>
     </div>
+    {{> socialFeeds}}
+  </div>
+</template>
+
+<template name="socialFeeds">
+  <div class="social-feeds-container">
+    {{#if twitterUrl}}
+      <div>
+        <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+        <a class="twitter-timeline" data-height="500" href={{twitterUrl}}>Tweets by TwitterDev</a>
+      </div>
+    {{/if}}
+    {{#if facebookUrl}}
+      <div>
+        <iframe class="social-feed-facebook" src={{facebookUrl}}></iframe>
+      </div>
+    {{/if}}
   </div>
 </template>

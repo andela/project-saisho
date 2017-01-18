@@ -288,7 +288,12 @@ Template.coreOrderShippingInvoice.helpers({
 
     return order.billing[0].paymentMethod.status === "approved";
   },
-
+  // check if the order has been cancelled
+  orderCanceled() {
+    const orderId = Template.instance().data.orderId;
+    const order = Orders.findOne(orderId);
+    return (order.workflow.status === "coreOrderWorkflow/canceled");
+  },
   paymentCaptured() {
     const instance = Template.instance();
     const order = instance.state.get("order");

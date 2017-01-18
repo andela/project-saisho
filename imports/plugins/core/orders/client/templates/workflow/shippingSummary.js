@@ -84,7 +84,27 @@ Template.coreOrderShippingSummary.helpers({
         if (fullItem._id === shipmentItem._id) {
           if (fullItem.workflow) {
             if (_.isArray(fullItem.workflow.workflow)) {
-              return _.includes(fullItem.workflow.workflow, "coreOrderItemWorkflow/completed");
+              return fullItem.workflow.status === "coreOrderItemWorkflow/shipped";
+            }
+          }
+        }
+      }
+    });
+    const canceled = _.every(shipment.items, (shipmentItem) => {
+      for (const fullItem of order.items) {
+        if (fullItem._id === shipmentItem._id) {
+          if (fullItem.workflow) {
+            return fullItem.workflow.status === "coreOrderItemWorkflow/canceled";
+          }
+        }
+      }
+    });
+    const completed = _.every(shipment.items, (shipmentItem) => {
+      for (const fullItem of order.items) {
+        if (fullItem._id === shipmentItem._id) {
+          if (fullItem.workflow) {
+            if (_.isArray(fullItem.workflow.workflow)) {
+              return fullItem.workflow.status === "coreOrderItemWorkflow/completed";
             }
           }
         }
@@ -94,14 +114,26 @@ Template.coreOrderShippingSummary.helpers({
     if (shipped) {
       return {
         shipped: true,
-        status: "success",
+        status: "info",
         label: i18next.t("orderShipping.shipped")
+      };
+    } else if (canceled) {
+      return {
+        shipped: false,
+        status: "danger",
+        label: i18next.t("orderShipping.canceled")
+      };
+    } else if (completed) {
+      return {
+        shipped: true,
+        status: "success",
+        label: "Delivered"
       };
     }
 
     return {
       shipped: false,
-      status: "info",
+      status: "warning",
       label: i18next.t("orderShipping.notShipped")
     };
   }
